@@ -1,0 +1,70 @@
+version: '3'
+services:
+  mongo:
+    build: 
+      context: .
+      dockerfile: mongo.dockerfile
+    container_name: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-volume:/data/db
+    networks:
+      - rede-aplicacao
+
+  mongo-express:
+    build:
+      context: .
+      dockerfile: mongo-express.dockerfile
+    container_name: mongo-express
+    ports:
+      - 8081:8081
+    networks:
+      - rede-aplicacao
+
+  node1:
+    build:
+      context: .
+      dockerfile: app.dockerfile
+    container_name: node1
+    ports:
+      - 3000:3000
+    networks:
+      - rede-aplicacao
+
+  node2:
+    build:
+      context: .
+      dockerfile: app.dockerfile
+    container_name: node2
+    ports:
+      - 3002:3000
+    networks:
+      - rede-aplicacao
+
+  node3:
+    build:
+      context: .
+      dockerfile: app.dockerfile
+    container_name: node3
+    ports:
+      - 3004:3000
+    networks:
+      - rede-aplicacao
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx
+    ports:
+      - 80:80
+    networks:
+      - rede-aplicacao
+    volumes: 
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+
+volumes:
+  mongo-volume:
+
+networks:
+  rede-aplicacao:
+    driver: bridge
